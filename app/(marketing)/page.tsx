@@ -1,10 +1,10 @@
 import { RoutePlaceholder } from "@/components/shared/route-placeholder";
 
-export default function AppPage() {
+export default function LandingPage() {
   return (
     <RoutePlaceholder
-      title="EchoGPT Web App"
-      description="Chat dashboard goes here."
+      title="EchoGPT Landing"
+      description="Marketing page goes here."
     />
   );
 }
