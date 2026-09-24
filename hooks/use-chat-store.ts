@@ -1,41 +1,158 @@
 import { create } from "zustand";
 import { initialConversations } from "@/data/conversations";
 import { DEFAULT_MODEL_ID } from "@/data/models";
-import type { Conversation, ModelId } from "@/types/chat";
+import { generateMockReply, REPLY_DELAY_MS } from "@/lib/mock-responses";
+import type { Conversation, Message, ModelId } from "@/types/chat";
+
+export type PendingStatus = "loading" | "error";
 
 interface ChatState {
   conversations: Conversation[];
-  /** null = draft "new chat" (nothing created until the first message) */
   activeId: string | null;
   modelId: ModelId;
   mobileNavOpen: boolean;
+
+  pending: Record<string, PendingStatus>;
   selectConversation: (id: string) => void;
   startNewChat: () => void;
   setModel: (id: ModelId) => void;
   setMobileNavOpen: (open: boolean) => void;
+  sendMessage: (text: string) => void;
+  retry: () => void;
 }
 
-export const useChatStore = create<ChatState>()((set, get) => ({
-  conversations: initialConversations,
-  activeId: null,
-  modelId: DEFAULT_MODEL_ID,
-  mobileNavOpen: false,
+function makeTitle(text: string): string {
+  const oneLine = text.replace(/\s+/g, " ").trim();
+  return oneLine.length > 48 ? `${oneLine.slice(0, 48).trimEnd()}…` : oneLine;
+}
 
-  selectConversation: (id) => {
-    const conversation = get().conversations.find((c) => c.id === id);
+export const useChatStore = create<ChatState>()((set, get) => {
+  function scheduleReply(
+    conversationId: string,
+    prompt: string,
+    allowFail: boolean,
+  ) {
+    const conversation = get().conversations.find(
+      (c) => c.id === conversationId,
+    );
     if (!conversation) return;
-    set({ activeId: id, modelId: conversation.modelId, mobileNavOpen: false });
-  },
 
-  startNewChat: () => set({ activeId: null, mobileNavOpen: false }),
+    set((s) => ({ pending: { ...s.pending, [conversationId]: "loading" } }));
 
-  setModel: (id) =>
-    set((state) => ({
-      modelId: id,
-      conversations: state.conversations.map((c) =>
-        c.id === state.activeId ? { ...c, modelId: id } : c,
-      ),
-    })),
+    window.setTimeout(() => {
+      const shouldFail = allowFail && prompt.toLowerCase().includes("/error");
 
-  setMobileNavOpen: (open) => set({ mobileNavOpen: open }),
-}));
+      set((s) => {
+        const pending = { ...s.pending };
+
+        if (shouldFail) {
+          pending[conversationId] = "error";
+          return { pending };
+        }
+
+        delete pending[conversationId];
+        const current = s.conversations.find((c) => c.id === conversationId);
+        if (!current) return { pending };
+
+        const reply: Message = {
+          id: crypto.randomUUID(),
+          role: "assistant",
+          content: generateMockReply(prompt, current.modelId),
+        };
+
+        return {
+          pending,
+          conversations: s.conversations.map((c) =>
+            c.id === conversationId
+              ? { ...c, messages: [...c.messages, reply] }
+              : c,
+          ),
+        };
+      });
+    }, REPLY_DELAY_MS[conversation.modelId]);
+  }
+
+  return {
+    conversations: initialConversations,
+    activeId: null,
+    modelId: DEFAULT_MODEL_ID,
+    mobileNavOpen: false,
+    pending: {},
+
+    selectConversation: (id) => {
+      const conversation = get().conversations.find((c) => c.id === id);
+      if (!conversation) return;
+      set({
+        activeId: id,
+        modelId: conversation.modelId,
+        mobileNavOpen: false,
+      });
+    },
+
+    startNewChat: () => set({ activeId: null, mobileNavOpen: false }),
+
+    setModel: (id) =>
+      set((state) => ({
+        modelId: id,
+        conversations: state.conversations.map((c) =>
+          c.id === state.activeId ? { ...c, modelId: id } : c,
+        ),
+      })),
+
+    setMobileNavOpen: (open) => set({ mobileNavOpen: open }),
+
+    sendMessage: (text) => {
+      const trimmed = text.trim();
+      if (!trimmed) return;
+
+      const { activeId, modelId, pending } = get();
+      if (activeId && pending[activeId] === "loading") return;
+
+      const userMessage: Message = {
+        id: crypto.randomUUID(),
+        role: "user",
+        content: trimmed,
+      };
+      let conversationId: string;
+
+      if (activeId === null) {
+        conversationId = crypto.randomUUID();
+        const created: Conversation = {
+          id: conversationId,
+          title: makeTitle(trimmed),
+          group: "Today",
+          modelId,
+          messages: [userMessage],
+        };
+        set((s) => ({
+          conversations: [created, ...s.conversations],
+          activeId: created.id,
+        }));
+      } else {
+        conversationId = activeId;
+        set((s) => ({
+          conversations: s.conversations.map((c) =>
+            c.id === activeId
+              ? { ...c, messages: [...c.messages, userMessage] }
+              : c,
+          ),
+        }));
+      }
+
+      scheduleReply(conversationId, trimmed, true);
+    },
+
+    retry: () => {
+      const { activeId, conversations, pending } = get();
+      if (!activeId || pending[activeId] !== "error") return;
+
+      const conversation = conversations.find((c) => c.id === activeId);
+      const lastUser = conversation?.messages.findLast(
+        (m) => m.role === "user",
+      );
+      if (!lastUser) return;
+
+      scheduleReply(activeId, lastUser.content, false);
+    },
+  };
+});
