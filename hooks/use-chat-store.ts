@@ -3,6 +3,7 @@ import { initialConversations } from "@/data/conversations";
 import { DEFAULT_MODEL_ID } from "@/data/models";
 import { generateMockReply, REPLY_DELAY_MS } from "@/lib/mock-responses";
 import type { Conversation, Message, ModelId } from "@/types/chat";
+import { useSettingsStore } from "@/hooks/use-settings-store";
 
 export type PendingStatus = "loading" | "error";
 
@@ -11,7 +12,6 @@ interface ChatState {
   activeId: string | null;
   modelId: ModelId;
   mobileNavOpen: boolean;
-
   pending: Record<string, PendingStatus>;
   selectConversation: (id: string) => void;
   startNewChat: () => void;
@@ -19,6 +19,7 @@ interface ChatState {
   setMobileNavOpen: (open: boolean) => void;
   sendMessage: (text: string) => void;
   retry: () => void;
+  resetChats: () => void;
 }
 
 function makeTitle(text: string): string {
@@ -57,7 +58,11 @@ export const useChatStore = create<ChatState>()((set, get) => {
         const reply: Message = {
           id: crypto.randomUUID(),
           role: "assistant",
-          content: generateMockReply(prompt, current.modelId),
+          content: generateMockReply(
+            prompt,
+            current.modelId,
+            useSettingsStore.getState().responseStyle,
+          ),
         };
 
         return {
@@ -89,7 +94,12 @@ export const useChatStore = create<ChatState>()((set, get) => {
       });
     },
 
-    startNewChat: () => set({ activeId: null, mobileNavOpen: false }),
+    startNewChat: () =>
+      set({
+        activeId: null,
+        mobileNavOpen: false,
+        modelId: useSettingsStore.getState().defaultModelId,
+      }),
 
     setModel: (id) =>
       set((state) => ({
@@ -100,6 +110,14 @@ export const useChatStore = create<ChatState>()((set, get) => {
       })),
 
     setMobileNavOpen: (open) => set({ mobileNavOpen: open }),
+
+    resetChats: () =>
+      set({
+        conversations: initialConversations,
+        activeId: null,
+        pending: {},
+        modelId: useSettingsStore.getState().defaultModelId,
+      }),
 
     sendMessage: (text) => {
       const trimmed = text.trim();

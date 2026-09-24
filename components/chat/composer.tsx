@@ -3,6 +3,7 @@
 import { useEffect, type RefObject } from "react";
 import { ArrowUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useSettingsStore } from "@/hooks/use-settings-store";
 
 interface ComposerProps {
   value: string;
@@ -21,7 +22,7 @@ export function Composer({
   disabled,
   textareaRef,
 }: ComposerProps) {
-  // Auto-grow the textarea up to MAX_HEIGHT.
+  const enterToSend = useSettingsStore((s) => s.enterToSend);
   useEffect(() => {
     const el = textareaRef.current;
     if (!el) return;
@@ -47,11 +48,11 @@ export function Composer({
             placeholder="Message EchoGPT…"
             onChange={(e) => onChange(e.target.value)}
             onKeyDown={(e) => {
-              if (
-                e.key === "Enter" &&
-                !e.shiftKey &&
-                !e.nativeEvent.isComposing
-              ) {
+              if (e.key !== "Enter" || e.nativeEvent.isComposing) return;
+              const wantsSend = enterToSend
+                ? !e.shiftKey
+                : e.ctrlKey || e.metaKey;
+              if (wantsSend) {
                 e.preventDefault();
                 if (canSend) onSend();
               }
@@ -69,8 +70,10 @@ export function Composer({
           </Button>
         </div>
         <p className="mt-2 hidden text-center text-xs text-subtle-foreground sm:block">
-          Demo mode: replies are mocked. Enter to send, Shift+Enter for a new
-          line.
+          Demo mode: replies are mocked.{" "}
+          {enterToSend
+            ? "Enter to send, Shift+Enter for a new line."
+            : "Ctrl/⌘ + Enter to send."}
         </p>
       </div>
     </div>

@@ -6,6 +6,8 @@ import { MessageError } from "@/components/chat/message-error";
 import { TypingIndicator } from "@/components/chat/typing-indicator";
 import type { PendingStatus } from "@/hooks/use-chat-store";
 import type { Conversation } from "@/types/chat";
+import { useSettingsStore } from "@/hooks/use-settings-store";
+import { cn } from "@/lib/utils";
 
 interface MessageListProps {
   conversation: Conversation;
@@ -20,6 +22,7 @@ export function MessageList({
 }: MessageListProps) {
   const bottomRef = useRef<HTMLDivElement>(null);
   const prevId = useRef(conversation.id);
+  const compact = useSettingsStore((s) => s.compactMode);
 
   useEffect(() => {
     const reduceMotion = window.matchMedia(
@@ -40,7 +43,10 @@ export function MessageList({
       aria-live="polite"
       aria-relevant="additions"
       aria-label="Conversation"
-      className="mx-auto w-full max-w-3xl space-y-6 px-4 py-6"
+      className={cn(
+        "mx-auto w-full max-w-3xl px-4",
+        compact ? "space-y-3 py-4" : "space-y-6 py-6",
+      )}
     >
       {conversation.messages.map((m) => (
         <MessageBubble key={m.id} message={m} />

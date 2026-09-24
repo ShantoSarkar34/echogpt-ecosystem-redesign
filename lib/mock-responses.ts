@@ -1,4 +1,5 @@
 import type { ModelId } from "@/types/chat";
+import type { ResponseStyle } from "@/types/settings";
 
 export const REPLY_DELAY_MS: Record<ModelId, number> = {
   "echo-swift": 900,
@@ -6,7 +7,11 @@ export const REPLY_DELAY_MS: Record<ModelId, number> = {
   "echo-deep": 2300,
 };
 
-export function generateMockReply(prompt: string, modelId: ModelId): string {
+export function generateMockReply(
+  prompt: string,
+  modelId: ModelId,
+  style: ResponseStyle = "balanced",
+): string {
   const p = prompt.toLowerCase();
   let reply: string;
 
@@ -35,5 +40,16 @@ export function generateMockReply(prompt: string, modelId: ModelId): string {
       "\n\nI also weighed a couple of alternatives before settling on this.";
   }
 
-  return `${reply}\n\n(Demo response. No real AI model is connected.)`;
+  const opener =
+    style === "concise"
+      ? "Short answer:\n\n"
+      : style === "detailed"
+        ? "Here's a detailed take:\n\n"
+        : "";
+  const closer =
+    style === "detailed"
+      ? "\n\nI can expand on any part, add examples, or adapt this to your situation."
+      : "";
+
+  return `${opener}${reply}${closer}\n\n(Demo response. No real AI model is connected.)`;
 }
