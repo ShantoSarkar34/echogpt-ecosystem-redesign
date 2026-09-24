@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { AppProviders } from "@/providers/app-providers";
 import "./globals.css";
@@ -13,6 +13,16 @@ export const metadata: Metadata = {
   title: { default: "EchoGPT — Redesign Concept", template: "%s · EchoGPT" },
   description:
     "A frontend redesign concept for the EchoGPT ecosystem: web app, landing page, and Chrome extension.",
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  interactiveWidget: "resizes-content",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#fafafc" },
+    { media: "(prefers-color-scheme: dark)", color: "#09090b" },
+  ],
 };
 
 export default function RootLayout({

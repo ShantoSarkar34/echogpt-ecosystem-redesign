@@ -21,6 +21,12 @@ export function AppShell({ children }: { children: ReactNode }) {
 
   return (
     <div className="flex h-dvh overflow-hidden bg-background">
+      <a
+        href="#chat-main"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-60 focus:rounded-lg focus:bg-accent focus:px-4 focus:py-2 focus:text-accent-foreground"
+      >
+        Skip to content
+      </a>
       <aside className="hidden w-72 shrink-0 border-r border-border lg:block">
         <Sidebar />
       </aside>
@@ -38,7 +44,13 @@ export function AppShell({ children }: { children: ReactNode }) {
         </Dialog.Portal>
       </Dialog.Root>
 
-      <main className="flex min-w-0 flex-1 flex-col">{children}</main>
+      <main
+        id="chat-main"
+        tabIndex={-1}
+        className="flex min-w-0 flex-1 flex-col outline-none"
+      >
+        {children}
+      </main>
     </div>
   );
 }
