@@ -36,7 +36,7 @@ function CopyButton({ text }: { text: string }) {
       size="sm"
       onClick={copy}
       aria-label={copied ? "Copied" : "Copy response"}
-      className="-ml-2 mt-1 h-8 gap-1.5 px-2 text-xs text-subtle-foreground sm:opacity-0 sm:transition-opacity sm:group-hover:opacity-100 sm:focus-visible:opacity-100"
+      className="-ml-2 mt-1 h-9 gap-1.5 px-2 text-xs text-subtle-foreground sm:opacity-0 sm:transition-opacity sm:group-hover:opacity-100 sm:focus-visible:opacity-100"
     >
       {copied ? <Check aria-hidden="true" /> : <Copy aria-hidden="true" />}
       {copied ? "Copied" : "Copy"}
