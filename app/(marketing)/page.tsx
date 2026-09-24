@@ -1,10 +1,5 @@
-import { RoutePlaceholder } from "@/components/shared/route-placeholder";
+import { Hero } from "@/components/landing/hero";
 
 export default function LandingPage() {
-  return (
-    <RoutePlaceholder
-      title="EchoGPT Landing"
-      description="Marketing page goes here."
-    />
-  );
+  return <Hero />;
 }
