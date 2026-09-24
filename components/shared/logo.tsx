@@ -1,5 +1,7 @@
 import { AudioLines } from "lucide-react";
 import { cn } from "@/lib/utils";
+import logo from "../../app/favicon.ico"
+import Image from "next/image";
 
 export function Logo({ className }: { className?: string }) {
   return (
@@ -9,9 +11,7 @@ export function Logo({ className }: { className?: string }) {
         className,
       )}
     >
-      <span className="grid size-8 place-items-center rounded-lg bg-brand-gradient text-white shadow-elev-1">
-        <AudioLines className="size-4" aria-hidden="true" />
-      </span>
+      <Image src={logo} alt="Logo" height={30} width={30}/>
       <span>EchoGPT</span>
     </span>
   );
