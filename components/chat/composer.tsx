@@ -10,6 +10,8 @@ interface ComposerProps {
   onChange: (value: string) => void;
   onSend: () => void;
   disabled?: boolean;
+  /** Hide the helper text under the input (used in the compact extension). */
+  hideHint?: boolean;
   textareaRef: RefObject<HTMLTextAreaElement | null>;
 }
 
@@ -20,9 +22,12 @@ export function Composer({
   onChange,
   onSend,
   disabled,
+  hideHint = false,
   textareaRef,
 }: ComposerProps) {
   const enterToSend = useSettingsStore((s) => s.enterToSend);
+
+  // Auto-grow the textarea up to MAX_HEIGHT.
   useEffect(() => {
     const el = textareaRef.current;
     if (!el) return;
@@ -69,12 +74,14 @@ export function Composer({
             <ArrowUp aria-hidden="true" />
           </Button>
         </div>
-        <p className="mt-2 hidden text-center text-xs text-subtle-foreground sm:block">
-          Demo mode: replies are mocked.{" "}
-          {enterToSend
-            ? "Enter to send, Shift+Enter for a new line."
-            : "Ctrl/⌘ + Enter to send."}
-        </p>
+        {!hideHint && (
+          <p className="mt-2 hidden text-center text-xs text-subtle-foreground sm:block">
+            Demo mode: replies are mocked.{" "}
+            {enterToSend
+              ? "Enter to send, Shift+Enter for a new line."
+              : "Ctrl/⌘ + Enter to send."}
+          </p>
+        )}
       </div>
     </div>
   );

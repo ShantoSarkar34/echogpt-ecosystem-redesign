@@ -1,5 +1,6 @@
 import type { ModelId } from "@/types/chat";
 import type { ResponseStyle } from "@/types/settings";
+import { mockPage } from "@/data/mock-page";
 
 export const REPLY_DELAY_MS: Record<ModelId, number> = {
   "echo-swift": 900,
@@ -15,7 +16,16 @@ export function generateMockReply(
   const p = prompt.toLowerCase();
   let reply: string;
 
-  if (/(summar|tl;dr|key points)/.test(p)) {
+  if (/(this page|the page|selected text)/.test(p)) {
+    if (/(explain|selected)/.test(p)) {
+      reply =
+        "In plain terms: the highlighted passage says that shared design decisions save teams from re-solving the same problems, freeing time for the real work.";
+    } else if (/(reply|draft)/.test(p)) {
+      reply = `Here's a short reply you could send:\n\nHi, thanks for "${mockPage.title}". The point about reducing repeated decisions really resonated with me. Do you have advice for introducing this on a small team?\n\nBest,\n[Your name]`;
+    } else {
+      reply = `Based on "${mockPage.title}":\n\n• Design systems are as much about speed as consistency.\n• Shared components remove repeated decisions.\n• Accessibility fixes can ship everywhere at once.\n• Start small and grow the system with real usage.`;
+    }
+  } else if (/(summar|tl;dr|key points)/.test(p)) {
     reply =
       "Here's a concise summary:\n\n• The main goal is stated up front.\n• Two supporting points explain the reasoning.\n• One risk stands out and needs a decision.\n• The recommended next step is clear and low effort.\n\nPaste the full text and I'll tailor this to it.";
   } else if (/(email|draft|write to|message)/.test(p)) {
