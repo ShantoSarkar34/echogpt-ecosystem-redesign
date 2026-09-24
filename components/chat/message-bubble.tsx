@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { motion } from "motion/react";
+import { useEffect, useRef, useState, memo } from "react";
+import { m } from "motion/react";
 import { Check, Copy } from "lucide-react";
 import { AssistantAvatar } from "@/components/chat/assistant-avatar";
 import { Button } from "@/components/ui/button";
@@ -44,19 +44,23 @@ function CopyButton({ text }: { text: string }) {
   );
 }
 
-export function MessageBubble({ message }: { message: Message }) {
+export const MessageBubble = memo(function MessageBubble({
+  message,
+}: {
+  message: Message;
+}) {
   if (message.role === "user") {
     return (
-      <motion.div {...enter} className="flex justify-end">
+      <m.div {...enter} className="flex justify-end">
         <p className="max-w-[85%] whitespace-pre-wrap wrap-break-word rounded-2xl rounded-br-md border border-border bg-surface-2 px-4 py-2.5 text-sm leading-relaxed sm:max-w-[75%]">
           {message.content}
         </p>
-      </motion.div>
+      </m.div>
     );
   }
 
   return (
-    <motion.div {...enter} className="group flex gap-3">
+    <m.div {...enter} className="group flex gap-3">
       <AssistantAvatar />
       <div className="min-w-0 flex-1">
         <p className="whitespace-pre-wrap wrap-break-word pt-1 text-sm leading-relaxed">
@@ -64,6 +68,6 @@ export function MessageBubble({ message }: { message: Message }) {
         </p>
         <CopyButton text={message.content} />
       </div>
-    </motion.div>
+    </m.div>
   );
-}
+});

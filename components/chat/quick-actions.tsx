@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "motion/react";
+import { m } from "motion/react";
 import {
   Bug,
   FileText,
@@ -25,7 +25,7 @@ export function QuickActions({ onPick }: { onPick: (prompt: string) => void }) {
       {quickActions.map((action, i) => {
         const Icon = icons[action.id];
         return (
-          <motion.li
+          <m.li
             key={action.id}
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
@@ -49,7 +49,7 @@ export function QuickActions({ onPick }: { onPick: (prompt: string) => void }) {
                 </span>
               </span>
             </button>
-          </motion.li>
+          </m.li>
         );
       })}
     </ul>

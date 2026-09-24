@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "motion/react";
+import { m } from "motion/react";
 import { AssistantAvatar } from "./assistant-avatar";
 
 export function TypingIndicator() {
@@ -13,7 +13,7 @@ export function TypingIndicator() {
         aria-hidden="true"
       >
         {[0, 1, 2].map((i) => (
-          <motion.span
+          <m.span
             key={i}
             className="size-1.5 rounded-full bg-muted-foreground"
             animate={{ opacity: [0.3, 1, 0.3] }}

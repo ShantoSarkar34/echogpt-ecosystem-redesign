@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, m } from "motion/react";
 import { BrowserMockup } from "@/components/extension/browser-mockup";
 import { ExtensionPanel } from "@/components/extension/extension-panel";
 import { useMediaQuery } from "@/hooks/use-media-query";
@@ -24,7 +24,7 @@ export function ExtensionDemo() {
 
       <AnimatePresence>
         {visible && (
-          <motion.div
+          <m.div
             key="panel"
             initial={{ opacity: 0, y: -8, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -37,7 +37,7 @@ export function ExtensionDemo() {
               contextEnabled={contextEnabled}
               onContextChange={setContextEnabled}
             />
-          </motion.div>
+          </m.div>
         )}
       </AnimatePresence>
     </div>

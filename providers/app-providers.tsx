@@ -2,7 +2,7 @@
 
 import type { ReactNode } from "react";
 import { ThemeProvider } from "next-themes";
-import { MotionConfig } from "motion/react";
+import { LazyMotion, MotionConfig, domAnimation } from "motion/react";
 import { SettingsEffects } from "@/components/settings/settings-effects";
 import { useSettingsStore } from "@/hooks/use-settings-store";
 
@@ -18,8 +18,10 @@ export function AppProviders({ children }: { children: ReactNode }) {
     >
       {/* "user" follows the OS setting; "always" is our in-app override */}
       <MotionConfig reducedMotion={reduceMotion ? "always" : "user"}>
-        <SettingsEffects />
-        {children}
+        <LazyMotion features={domAnimation} strict>
+          <SettingsEffects />
+          {children}
+        </LazyMotion>
       </MotionConfig>
     </ThemeProvider>
   );
