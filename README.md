@@ -11,7 +11,6 @@ A frontend redesign concept for the **EchoGPT ecosystem**, built as an assignmen
 |  |  |
 |---|---|
 | **Live demo** | https://echogpt-ecosystem.vercel.app/ |
-| **GitHub repository** | `<add your repository URL here>` |
 
 ---
 
