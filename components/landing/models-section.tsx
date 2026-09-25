@@ -56,8 +56,10 @@ export function ModelsSection() {
                 <Reveal delay={i * 0.06} className="h-full">
                   <div
                     className={cn(
-                      "h-full rounded-2xl border bg-background p-6",
-                      isDefault ? "border-accent" : "border-border",
+                      "h-full rounded-2xl border bg-background p-6 transition-[border-color,transform] duration-200 hover:-translate-y-0.5 motion-reduce:transform-none",
+                      isDefault
+                        ? "border-accent hover:border-accent"
+                        : "border-border hover:border-border-strong",
                     )}
                   >
                     <div className="flex items-center justify-between gap-3">

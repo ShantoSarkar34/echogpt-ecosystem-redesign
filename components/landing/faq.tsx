@@ -17,8 +17,8 @@ export function Faq() {
           <div className="divide-y divide-border rounded-2xl border border-border bg-surface">
             {faqs.map((f) => (
               <details key={f.question} className="group px-5">
-                <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-4 rounded-lg py-4 text-sm font-medium [&::-webkit-details-marker]:hidden">
-                  {f.question}
+                <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-4 rounded-lg py-4 [&::-webkit-details-marker]:hidden">
+                  <h3 className="text-sm font-medium">{f.question}</h3>
                   <ChevronDown
                     className="size-4 shrink-0 text-muted-foreground transition-transform duration-200 group-open:rotate-180 motion-reduce:transition-none"
                     aria-hidden="true"

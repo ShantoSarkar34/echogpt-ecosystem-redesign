@@ -48,7 +48,7 @@ export function Navbar() {
 
         <div className="flex items-center gap-2">
           <ThemeToggle />
-          <Button asChild size="sm" className="hidden sm:inline-flex">
+          <Button asChild size="sm" className="hidden md:inline-flex">
             <Link href="/app">Open app</Link>
           </Button>
           <Button
