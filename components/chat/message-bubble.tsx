@@ -72,7 +72,7 @@ export const MessageBubble = memo(function MessageBubble({
               value={draft}
               onChange={(e) => setDraft(e.target.value)}
               rows={3}
-              className="w-full resize-none bg-transparent text-sm leading-relaxed outline-none"
+              className="w-full resize-none bg-transparent text-sm leading-relaxed"
               autoFocus
             />
             <div className="mt-2 flex justify-end gap-2">
@@ -139,7 +139,11 @@ export const MessageBubble = memo(function MessageBubble({
             aria-label={copied ? "Copied" : "Copy response"}
             className="h-9 gap-1.5 px-2 text-xs text-subtle-foreground sm:opacity-0 sm:transition-opacity sm:group-hover:opacity-100 sm:focus-visible:opacity-100"
           >
-            {copied ? <Check aria-hidden="true" /> : <Copy aria-hidden="true" />}
+            {copied ? (
+              <Check aria-hidden="true" />
+            ) : (
+              <Copy aria-hidden="true" />
+            )}
             {copied ? "Copied" : "Copy"}
           </Button>
           {isLastAssistant && onRegenerate && (

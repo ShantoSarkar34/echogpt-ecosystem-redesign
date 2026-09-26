@@ -29,7 +29,6 @@ export function BrowserMockup({
     >
       {/* Tab strip: represents the browser's open tabs */}
       <div
-        role="tablist"
         aria-label="Open browser tabs"
         className="flex gap-1 bg-surface-2 px-3 pt-2.5"
       >
@@ -39,8 +38,8 @@ export function BrowserMockup({
             <button
               key={p.id}
               type="button"
-              role="tab"
-              aria-selected={active}
+              aria-pressed={active}
+              aria-label={`Switch to tab: ${p.title}`}
               onClick={() => onSelectPage(p.id)}
               title={p.title}
               className={cn(
