@@ -18,6 +18,8 @@ export function Sidebar() {
 
   const conversations = useChatStore((s) => s.conversations);
   const activeId = useChatStore((s) => s.activeId);
+  const pending = useChatStore((s) => s.pending);
+  const pendingIds = Object.keys(pending);
   const selectConversation = useChatStore((s) => s.selectConversation);
   const startNewChat = useChatStore((s) => s.startNewChat);
   const setMobileNavOpen = useChatStore((s) => s.setMobileNavOpen);
@@ -63,6 +65,7 @@ export function Sidebar() {
             selectConversation(id);
             goToChat();
           }}
+          pendingIds={pendingIds}
         />
       </nav>
 

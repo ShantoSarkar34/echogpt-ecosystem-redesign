@@ -12,12 +12,14 @@ interface ConversationListProps {
   conversations: Conversation[];
   activeId: string | null;
   onSelect: (id: string) => void;
+  pendingIds?: string[];
 }
 
 export function ConversationList({
   conversations,
   activeId,
   onSelect,
+  pendingIds = [],
 }: ConversationListProps) {
   if (conversations.length === 0) {
     return (
@@ -60,6 +62,12 @@ export function ConversationList({
                         aria-hidden="true"
                       />
                       <span className="truncate">{c.title}</span>
+                      {pendingIds.includes(c.id) && (
+                        <span
+                          aria-label="Reply in progress"
+                          className="ml-auto size-1.5 shrink-0 animate-pulse rounded-full bg-accent"
+                        />
+                      )}
                     </button>
                   </li>
                 );

@@ -20,6 +20,8 @@ interface ChatState {
   sendMessage: (text: string) => void;
   retry: () => void;
   resetChats: () => void;
+  regenerate: () => void;
+  editAndResend: (messageId: string, newText: string) => void;
 }
 
 function makeTitle(text: string): string {
@@ -171,6 +173,59 @@ export const useChatStore = create<ChatState>()((set, get) => {
       if (!lastUser) return;
 
       scheduleReply(activeId, lastUser.content, false);
+    },
+
+    regenerate: () => {
+      const { activeId, conversations, pending } = get();
+      if (!activeId || pending[activeId]) return;
+
+      const conversation = conversations.find((c) => c.id === activeId);
+      const lastUser = conversation?.messages.findLast(
+        (m) => m.role === "user",
+      );
+      if (!lastUser || !conversation) return;
+
+      // Drop the last assistant reply, then generate a fresh one for the same prompt.
+      const lastAssistantIndex = conversation.messages.findLastIndex(
+        (m) => m.role === "assistant",
+      );
+      set((s) => ({
+        conversations: s.conversations.map((c) =>
+          c.id === activeId && lastAssistantIndex !== -1
+            ? { ...c, messages: c.messages.slice(0, lastAssistantIndex) }
+            : c,
+        ),
+      }));
+
+      scheduleReply(activeId, lastUser.content, false);
+    },
+
+    editAndResend: (messageId, newText) => {
+      const { activeId, conversations, pending } = get();
+      if (!activeId || pending[activeId]) return;
+      const trimmed = newText.trim();
+      if (!trimmed) return;
+
+      const conversation = conversations.find((c) => c.id === activeId);
+      const index = conversation?.messages.findIndex((m) => m.id === messageId);
+      if (!conversation || index === undefined || index === -1) return;
+
+      // Truncate everything from the edited message onward, then resend.
+      set((s) => ({
+        conversations: s.conversations.map((c) =>
+          c.id === activeId
+            ? {
+                ...c,
+                messages: [
+                  ...c.messages.slice(0, index),
+                  { id: messageId, role: "user", content: trimmed },
+                ],
+              }
+            : c,
+        ),
+      }));
+
+      scheduleReply(activeId, trimmed, true);
     },
   };
 });

@@ -15,6 +15,8 @@ export function ChatView() {
   );
   const sendMessage = useChatStore((s) => s.sendMessage);
   const retry = useChatStore((s) => s.retry);
+  const regenerate = useChatStore((s) => s.regenerate);
+  const editAndResend = useChatStore((s) => s.editAndResend);
 
   const [draft, setDraft] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -39,6 +41,8 @@ export function ChatView() {
             conversation={conversation}
             status={status}
             onRetry={retry}
+            onEditSend={editAndResend}
+            onRegenerate={regenerate}
           />
         ) : (
           <EmptyState onPick={handlePick} />

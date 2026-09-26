@@ -4,25 +4,29 @@ import { useEffect, useRef } from "react";
 import { MessageBubble } from "@/components/chat/message-bubble";
 import { MessageError } from "@/components/chat/message-error";
 import { TypingIndicator } from "@/components/chat/typing-indicator";
-import type { PendingStatus } from "@/hooks/use-chat-store";
-import type { Conversation } from "@/types/chat";
 import { useSettingsStore } from "@/hooks/use-settings-store";
 import { cn } from "@/lib/utils";
+import type { PendingStatus } from "@/hooks/use-chat-store";
+import type { Conversation } from "@/types/chat";
 
 interface MessageListProps {
   conversation: Conversation;
   status: PendingStatus | undefined;
   onRetry: () => void;
+  onEditSend?: (id: string, text: string) => void;
+  onRegenerate?: () => void;
 }
 
 export function MessageList({
   conversation,
   status,
   onRetry,
+  onEditSend,
+  onRegenerate,
 }: MessageListProps) {
+  const compact = useSettingsStore((s) => s.compactMode);
   const bottomRef = useRef<HTMLDivElement>(null);
   const prevId = useRef(conversation.id);
-  const compact = useSettingsStore((s) => s.compactMode);
 
   useEffect(() => {
     const reduceMotion = window.matchMedia(
@@ -37,6 +41,14 @@ export function MessageList({
     });
   }, [conversation.id, conversation.messages.length, status]);
 
+  const lastUserId = conversation.messages.findLast(
+    (m) => m.role === "user",
+  )?.id;
+  const lastAssistantId = conversation.messages.findLast(
+    (m) => m.role === "assistant",
+  )?.id;
+  const busy = status === "loading";
+
   return (
     <div
       role="log"
@@ -49,7 +61,15 @@ export function MessageList({
       )}
     >
       {conversation.messages.map((m) => (
-        <MessageBubble key={m.id} message={m} />
+        <MessageBubble
+          key={m.id}
+          message={m}
+          isLastUser={m.id === lastUserId}
+          isLastAssistant={m.id === lastAssistantId}
+          disabled={busy}
+          onEditSend={onEditSend}
+          onRegenerate={onRegenerate}
+        />
       ))}
       {status === "loading" && <TypingIndicator />}
       {status === "error" && <MessageError onRetry={onRetry} />}
