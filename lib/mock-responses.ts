@@ -1,6 +1,5 @@
 import type { ModelId } from "@/types/chat";
 import type { ResponseStyle } from "@/types/settings";
-import { mockPage } from "@/data/mock-page";
 
 export const REPLY_DELAY_MS: Record<ModelId, number> = {
   "echo-swift": 900,
@@ -12,18 +11,21 @@ export function generateMockReply(
   prompt: string,
   modelId: ModelId,
   style: ResponseStyle = "balanced",
+  pageContext?: { title: string; highlight: string },
 ): string {
   const p = prompt.toLowerCase();
   let reply: string;
 
   if (/(this page|the page|selected text)/.test(p)) {
+    const title = pageContext?.title ?? "this page";
+    const highlight = pageContext?.highlight ?? "the highlighted passage";
+
     if (/(explain|selected)/.test(p)) {
-      reply =
-        "In plain terms: the highlighted passage says that shared design decisions save teams from re-solving the same problems, freeing time for the real work.";
+      reply = `In plain terms: ${highlight[0].toLowerCase()}${highlight.slice(1)}`;
     } else if (/(reply|draft)/.test(p)) {
-      reply = `Here's a short reply you could send:\n\nHi, thanks for "${mockPage.title}". The point about reducing repeated decisions really resonated with me. Do you have advice for introducing this on a small team?\n\nBest,\n[Your name]`;
+      reply = `Here's a short reply you could send:\n\nHi, thanks for "${title}". The point that stood out to me was: "${highlight}". Do you have advice for putting this into practice?\n\nBest,\n[Your name]`;
     } else {
-      reply = `Based on "${mockPage.title}":\n\n• Design systems are as much about speed as consistency.\n• Shared components remove repeated decisions.\n• Accessibility fixes can ship everywhere at once.\n• Start small and grow the system with real usage.`;
+      reply = `Based on "${title}":\n\n• ${highlight}\n• Shared decisions save time.\n• Small teams benefit the most.\n• Worth revisiting as the page updates.`;
     }
   } else if (/(summar|tl;dr|key points)/.test(p)) {
     reply =

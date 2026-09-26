@@ -1,15 +1,16 @@
 import { Globe } from "lucide-react";
-import { mockPage } from "@/data/mock-page";
+import type { MockPage } from "@/data/mock-page";
 import { cn } from "@/lib/utils";
 
 interface ContextToggleProps {
+  page: MockPage;
   enabled: boolean;
   onChange: (enabled: boolean) => void;
 }
 
-export function ContextToggle({ enabled, onChange }: ContextToggleProps) {
+export function ContextToggle({ page, enabled, onChange }: ContextToggleProps) {
   return (
-    <div className="shrink-0 px-3 pt-1">
+    <div className="shrink-0 space-y-1.5 px-3 pt-1">
       <button
         type="button"
         aria-pressed={enabled}
@@ -27,10 +28,18 @@ export function ContextToggle({ enabled, onChange }: ContextToggleProps) {
           aria-hidden="true"
         />
         <span className="min-w-0 flex-1 truncate">
-          {enabled ? mockPage.title : "Page context is off"}
+          {enabled ? page.title : "Page context is off"}
         </span>
         <span className="shrink-0 font-medium">{enabled ? "On" : "Off"}</span>
       </button>
+      {enabled && (
+        <p
+          className="truncate px-1 text-[11px] text-subtle-foreground"
+          title={page.highlight}
+        >
+          &ldquo;{page.highlight}&rdquo;
+        </p>
+      )}
     </div>
   );
 }

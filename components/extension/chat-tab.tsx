@@ -5,14 +5,21 @@ import { Composer } from "@/components/chat/composer";
 import { MessageList } from "@/components/chat/message-list";
 import { ContextToggle } from "@/components/extension/context-toggle";
 import { ExtensionEmpty } from "@/components/extension/extension-empty";
+import { getMockPage } from "@/data/mock-page";
 import { useChatStore } from "@/hooks/use-chat-store";
 
 interface ChatTabProps {
+  activePageId: string;
   contextEnabled: boolean;
   onContextChange: (enabled: boolean) => void;
 }
 
-export function ChatTab({ contextEnabled, onContextChange }: ChatTabProps) {
+export function ChatTab({
+  activePageId,
+  contextEnabled,
+  onContextChange,
+}: ChatTabProps) {
+  const page = getMockPage(activePageId);
   const conversation = useChatStore((s) =>
     s.conversations.find((c) => c.id === s.activeId),
   );
@@ -27,10 +34,18 @@ export function ChatTab({ contextEnabled, onContextChange }: ChatTabProps) {
   const [draft, setDraft] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
+  function send(text: string) {
+    if (!text.trim() || status === "loading") return;
+    sendMessage(
+      text,
+      contextEnabled
+        ? { title: page.title, highlight: page.highlight }
+        : undefined,
+    );
+  }
+
   function handleSend() {
-    const text = draft.trim();
-    if (!text || status === "loading") return;
-    sendMessage(text);
+    send(draft);
     setDraft("");
   }
 
@@ -47,12 +62,17 @@ export function ChatTab({ contextEnabled, onContextChange }: ChatTabProps) {
           />
         ) : (
           <ExtensionEmpty
+            page={page}
             contextEnabled={contextEnabled}
-            onPick={sendMessage}
+            onPick={send}
           />
         )}
       </div>
-      <ContextToggle enabled={contextEnabled} onChange={onContextChange} />
+      <ContextToggle
+        page={page}
+        enabled={contextEnabled}
+        onChange={onContextChange}
+      />
       <Composer
         value={draft}
         onChange={setDraft}

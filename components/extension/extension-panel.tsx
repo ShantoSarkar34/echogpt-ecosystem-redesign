@@ -27,11 +27,13 @@ const tabs: { id: TabId; label: string; icon: LucideIcon }[] = [
 ];
 
 interface ExtensionPanelProps {
+  activePageId: string;
   contextEnabled: boolean;
   onContextChange: (enabled: boolean) => void;
 }
 
 export function ExtensionPanel({
+  activePageId,
   contextEnabled,
   onContextChange,
 }: ExtensionPanelProps) {
@@ -91,6 +93,7 @@ export function ExtensionPanel({
           className="flex min-h-0 flex-1 flex-col outline-none data-[state=active]:animate-fade-in data-[state=inactive]:hidden motion-reduce:animate-none"
         >
           <ChatTab
+            activePageId={activePageId}
             contextEnabled={contextEnabled}
             onContextChange={onContextChange}
           />

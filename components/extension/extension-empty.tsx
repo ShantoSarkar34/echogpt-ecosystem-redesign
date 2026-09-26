@@ -1,12 +1,14 @@
 import { generalActions, pageActions } from "@/data/extension-action";
-import { mockPage } from "@/data/mock-page";
+import type { MockPage } from "@/data/mock-page";
 
 interface ExtensionEmptyProps {
+  page: MockPage;
   contextEnabled: boolean;
   onPick: (prompt: string) => void;
 }
 
 export function ExtensionEmpty({
+  page,
   contextEnabled,
   onPick,
 }: ExtensionEmptyProps) {
@@ -20,13 +22,13 @@ export function ExtensionEmpty({
         </h3>
         <p className="mt-1 truncate text-sm text-muted-foreground">
           {contextEnabled
-            ? `Reading: ${mockPage.title}`
+            ? `Reading: ${page.title}`
             : "Pick a quick action or type below."}
         </p>
       </div>
 
       <ul className="mt-5 space-y-2">
-        {actions.map((a: any) => (
+        {actions.map((a) => (
           <li key={a.id}>
             <button
               type="button"

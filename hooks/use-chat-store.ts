@@ -17,7 +17,10 @@ interface ChatState {
   startNewChat: () => void;
   setModel: (id: ModelId) => void;
   setMobileNavOpen: (open: boolean) => void;
-  sendMessage: (text: string) => void;
+  sendMessage: (
+    text: string,
+    pageContext?: { title: string; highlight: string },
+  ) => void;
   retry: () => void;
   resetChats: () => void;
   regenerate: () => void;
@@ -34,6 +37,7 @@ export const useChatStore = create<ChatState>()((set, get) => {
     conversationId: string,
     prompt: string,
     allowFail: boolean,
+    pageContext?: { title: string; highlight: string },
   ) {
     const conversation = get().conversations.find(
       (c) => c.id === conversationId,
@@ -64,6 +68,7 @@ export const useChatStore = create<ChatState>()((set, get) => {
             prompt,
             current.modelId,
             useSettingsStore.getState().responseStyle,
+            pageContext,
           ),
         };
 
@@ -121,7 +126,7 @@ export const useChatStore = create<ChatState>()((set, get) => {
         modelId: useSettingsStore.getState().defaultModelId,
       }),
 
-    sendMessage: (text) => {
+    sendMessage: (text, pageContext) => {
       const trimmed = text.trim();
       if (!trimmed) return;
 
@@ -159,7 +164,7 @@ export const useChatStore = create<ChatState>()((set, get) => {
         }));
       }
 
-      scheduleReply(conversationId, trimmed, true);
+      scheduleReply(conversationId, trimmed, true, pageContext);
     },
 
     retry: () => {
