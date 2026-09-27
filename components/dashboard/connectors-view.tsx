@@ -14,9 +14,11 @@ import {
   type Connector,
 } from "@/data/connectors";
 import { cn } from "@/lib/utils";
+import { DemoNoticeDialog } from "@/components/dashboard/demo-notice-dialog";
 
 export function ConnectorsView() {
   const [connectors, setConnectors] = useState<Connector[]>(initialConnectors);
+  const [announcement, setAnnouncement] = useState("");
   const [query, setQuery] = useState("");
   const [category, setCategory] =
     useState<(typeof connectorCategories)[number]>("All");
@@ -42,6 +44,7 @@ export function ConnectorsView() {
       setConnectors((prev) =>
         prev.map((c) => (c.id === id ? { ...c, connected: false } : c)),
       );
+      setAnnouncement(`${target.name} disconnected.`);
       return;
     }
 
@@ -51,6 +54,7 @@ export function ConnectorsView() {
         prev.map((c) => (c.id === id ? { ...c, connected: true } : c)),
       );
       setPendingId(null);
+      setAnnouncement(`${target.name} connected.`);
     }, 1100);
   }
 
@@ -61,6 +65,9 @@ export function ConnectorsView() {
         description="Connect EchoGPT with the tools you use every day."
       />
       <PageContainer className="max-w-5xl">
+        <p aria-live="polite" className="sr-only">
+          {announcement}
+        </p>
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="relative sm:w-72">
             <Search
@@ -157,13 +164,19 @@ export function ConnectorsView() {
                     )}
                   </Button>
                   {c.connected && (
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      aria-label={`${c.name} settings`}
-                    >
-                      <Settings2 aria-hidden="true" />
-                    </Button>
+                    <DemoNoticeDialog
+                      trigger={
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          aria-label={`${c.name} settings`}
+                        >
+                          <Settings2 aria-hidden="true" />
+                        </Button>
+                      }
+                      title={`${c.name} settings`}
+                      description="Connector-specific settings would appear here in a real deployment."
+                    />
                   )}
                 </div>
               </Card>

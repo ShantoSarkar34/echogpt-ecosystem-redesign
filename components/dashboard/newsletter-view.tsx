@@ -8,6 +8,7 @@ import { PageContainer } from "@/components/dashboard/page-container";
 import { PageHeader } from "@/components/dashboard/page-header";
 import { Button } from "@/components/ui/button";
 import { newsletters } from "@/data/newsletters";
+import { DemoNoticeDialog } from "@/components/dashboard/demo-notice-dialog";
 
 type Status = "idle" | "loading" | "success" | "invalid";
 
@@ -119,9 +120,15 @@ export function NewsletterView() {
                   <span className="text-xs text-subtle-foreground">
                     {n.date}
                   </span>
-                  <Button variant="ghost" size="sm">
-                    Read
-                  </Button>
+                  <DemoNoticeDialog
+                    trigger={
+                      <Button variant="ghost" size="sm">
+                        Read
+                      </Button>
+                    }
+                    title={n.title}
+                    description="This is demo content for a frontend redesign concept — there's no real article behind this newsletter issue."
+                  />
                 </div>
               </Card>
             ))}

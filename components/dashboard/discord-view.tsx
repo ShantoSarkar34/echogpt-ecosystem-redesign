@@ -7,6 +7,7 @@ import { Card } from "@/components/dashboard/card";
 import { PageContainer } from "@/components/dashboard/page-container";
 import { PageHeader } from "@/components/dashboard/page-header";
 import { Button } from "@/components/ui/button";
+import { DemoNoticeDialog } from "@/components/dashboard/demo-notice-dialog";
 import {
   communityCategories,
   communityStats,
@@ -104,8 +105,16 @@ export function DiscordView() {
         </Card>
 
         <div className="flex flex-wrap gap-2">
-          <Button variant="secondary">Join Community</Button>
-          <Button variant="outline">View Guidelines</Button>
+          <DemoNoticeDialog
+            trigger={<Button variant="secondary">Join Community</Button>}
+            title="Join the community"
+            description="This would normally open the Discord invite flow. No real Discord integration exists in this demo."
+          />
+          <DemoNoticeDialog
+            trigger={<Button variant="outline">View Guidelines</Button>}
+            title="Community guidelines"
+            description="Guidelines content would appear here in a real deployment. This is a demo placeholder."
+          />
         </div>
       </PageContainer>
     </div>

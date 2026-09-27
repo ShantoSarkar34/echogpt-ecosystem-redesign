@@ -8,6 +8,7 @@ import { EmptyState } from "@/components/dashboard/empty-state";
 import { PageContainer } from "@/components/dashboard/page-container";
 import { PageHeader } from "@/components/dashboard/page-header";
 import { Button } from "@/components/ui/button";
+import { DemoNoticeDialog } from "@/components/dashboard/demo-notice-dialog";
 import {
   storeCategories,
   storeProducts,
@@ -42,9 +43,15 @@ function ProductCard({ product }: { product: StoreProduct }) {
         </span>
         <span>{product.usageCount}</span>
       </div>
-      <Button variant="secondary" size="sm" className="mt-4">
-        View
-      </Button>
+      <DemoNoticeDialog
+        trigger={
+          <Button variant="secondary" size="sm" className="mt-4">
+            View
+          </Button>
+        }
+        title={product.name}
+        description={`${product.description} This is a demo product page — no real product exists behind this listing.`}
+      />
     </Card>
   );
 }

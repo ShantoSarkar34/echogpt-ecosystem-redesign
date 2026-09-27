@@ -25,6 +25,7 @@ import {
   type HistoryItem,
   type HistoryType,
 } from "@/data/history";
+import { DemoNoticeDialog } from "@/components/dashboard/demo-notice-dialog";
 
 const typeIcons: Record<HistoryType, typeof MessageSquare> = {
   Chat: MessageSquare,
@@ -218,9 +219,18 @@ export function HistoryView() {
                             align="end"
                             className="z-50 min-w-36 rounded-xl border border-border bg-elevated p-1.5 shadow-elev-2 animate-pop-in motion-reduce:animate-none"
                           >
-                            <DropdownMenu.Item className="flex cursor-pointer items-center rounded-lg px-2.5 py-2 text-sm outline-none data-highlighted:bg-surface-2">
-                              Open
-                            </DropdownMenu.Item>
+                            <DemoNoticeDialog
+                              trigger={
+                                <DropdownMenu.Item
+                                  onSelect={(e) => e.preventDefault()}
+                                  className="flex cursor-pointer items-center rounded-lg px-2.5 py-2 text-sm outline-none data-highlighted:bg-surface-2"
+                                >
+                                  Open
+                                </DropdownMenu.Item>
+                              }
+                              title={item.title}
+                              description="Opening this item would take you to its full chat, image, video, or task view. Not wired up in this demo history list."
+                            />
                             <DropdownMenu.Item
                               onSelect={() => startRename(item)}
                               className="flex cursor-pointer items-center rounded-lg px-2.5 py-2 text-sm outline-none data-highlighted:bg-surface-2"
