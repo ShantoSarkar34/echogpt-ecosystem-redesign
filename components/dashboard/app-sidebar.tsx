@@ -3,14 +3,16 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { Plus, Settings } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { ConversationList } from "@/components/chat/conversation-list";
+import { SidebarSection } from "@/components/dashboard/sidebar-section";
 import { Logo } from "@/components/shared/logo";
 import { ThemeToggle } from "@/components/shared/theme-toggle";
-import { ConversationList } from "@/components/chat/conversation-list";
+import { Button } from "@/components/ui/button";
+import { navSections } from "@/data/nav";
 import { useChatStore } from "@/hooks/use-chat-store";
 import { cn } from "@/lib/utils";
 
-export function Sidebar() {
+export function AppSidebar({ onNavigate }: { onNavigate?: () => void }) {
   const router = useRouter();
   const pathname = usePathname();
   const onChatRoute = pathname === "/app";
@@ -19,10 +21,9 @@ export function Sidebar() {
   const conversations = useChatStore((s) => s.conversations);
   const activeId = useChatStore((s) => s.activeId);
   const pending = useChatStore((s) => s.pending);
-  const pendingIds = Object.keys(pending);
   const selectConversation = useChatStore((s) => s.selectConversation);
   const startNewChat = useChatStore((s) => s.startNewChat);
-  const setMobileNavOpen = useChatStore((s) => s.setMobileNavOpen);
+  const pendingIds = Object.keys(pending);
 
   function goToChat() {
     if (!onChatRoute) router.push("/app");
@@ -31,11 +32,7 @@ export function Sidebar() {
   return (
     <div className="flex h-full w-full flex-col bg-surface">
       <div className="flex h-14 shrink-0 items-center px-4">
-        <Link
-          href="/app"
-          aria-label="EchoGPT home"
-          onClick={() => setMobileNavOpen(false)}
-        >
+        <Link href="/app" aria-label="EchoGPT home" onClick={onNavigate}>
           <Logo />
         </Link>
       </div>
@@ -47,6 +44,7 @@ export function Sidebar() {
           onClick={() => {
             startNewChat();
             goToChat();
+            onNavigate?.();
           }}
         >
           <Plus aria-hidden="true" />
@@ -55,18 +53,31 @@ export function Sidebar() {
       </div>
 
       <nav
-        aria-label="Conversation history"
-        className="min-h-0 flex-1 overflow-y-auto px-2 py-3"
+        aria-label="Sidebar"
+        className="min-h-0 flex-1 space-y-1 overflow-y-auto px-2 pb-3"
       >
-        <ConversationList
-          conversations={conversations}
-          activeId={onChatRoute ? activeId : null}
-          onSelect={(id) => {
-            selectConversation(id);
-            goToChat();
-          }}
-          pendingIds={pendingIds}
-        />
+      
+        {navSections.map((section) => (
+          <SidebarSection
+            key={section.label}
+            section={section}
+            onNavigate={onNavigate}
+          />
+        ))}
+        {/* Recent conversations stay pinned near the top, exactly as in the original sidebar */}
+
+        <section aria-label="Recent conversations">
+          <ConversationList
+            conversations={conversations}
+            activeId={onChatRoute ? activeId : null}
+            pendingIds={pendingIds}
+            onSelect={(id) => {
+              selectConversation(id);
+              goToChat();
+              onNavigate?.();
+            }}
+          />
+        </section>
       </nav>
 
       <div className="space-y-1 border-t border-border p-2">
@@ -81,7 +92,7 @@ export function Sidebar() {
           <Link
             href="/app/settings"
             aria-current={onSettingsRoute ? "page" : undefined}
-            onClick={() => setMobileNavOpen(false)}
+            onClick={onNavigate}
           >
             <Settings aria-hidden="true" />
             Settings
