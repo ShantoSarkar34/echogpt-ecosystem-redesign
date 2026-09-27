@@ -1,11 +1,8 @@
-import React from 'react'
+import type { Metadata } from "next";
+import { PlatformView } from "@/components/dashboard/platform-view";
 
-function page() {
-  return (
-    <div>
-       Hello world !
-    </div>
-  )
+export const metadata: Metadata = { title: "AI Platform" };
+
+export default function PlatformPage() {
+  return <PlatformView />;
 }
-
-export default page

@@ -1,11 +1,8 @@
-import React from 'react'
+import type { Metadata } from "next";
+import { SubscriptionsView } from "@/components/dashboard/subscriptions-view";
 
-function page() {
-  return (
-    <div>
-       Hello world !
-    </div>
-  )
+export const metadata: Metadata = { title: "Subscriptions" };
+
+export default function SubscriptionsPage() {
+  return <SubscriptionsView />;
 }
-
-export default page
