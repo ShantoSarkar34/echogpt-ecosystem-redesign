@@ -64,20 +64,6 @@ export function AppSidebar({ onNavigate }: { onNavigate?: () => void }) {
             onNavigate={onNavigate}
           />
         ))}
-        {/* Recent conversations stay pinned near the top, exactly as in the original sidebar */}
-
-        <section aria-label="Recent conversations">
-          <ConversationList
-            conversations={conversations}
-            activeId={onChatRoute ? activeId : null}
-            pendingIds={pendingIds}
-            onSelect={(id) => {
-              selectConversation(id);
-              goToChat();
-              onNavigate?.();
-            }}
-          />
-        </section>
       </nav>
 
       <div className="space-y-1 border-t border-border p-2">
