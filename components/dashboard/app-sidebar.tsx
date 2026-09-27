@@ -3,13 +3,13 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { Plus, Settings } from "lucide-react";
-import { ConversationList } from "@/components/chat/conversation-list";
 import { SidebarSection } from "@/components/dashboard/sidebar-section";
 import { Logo } from "@/components/shared/logo";
 import { ThemeToggle } from "@/components/shared/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { navSections } from "@/data/nav";
 import { useChatStore } from "@/hooks/use-chat-store";
+import { useAuthStore } from "@/hooks/use-auth-store";
 import { cn } from "@/lib/utils";
 
 export function AppSidebar({ onNavigate }: { onNavigate?: () => void }) {
@@ -17,13 +17,9 @@ export function AppSidebar({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = usePathname();
   const onChatRoute = pathname === "/app";
   const onSettingsRoute = pathname.startsWith("/app/settings");
-
-  const conversations = useChatStore((s) => s.conversations);
-  const activeId = useChatStore((s) => s.activeId);
-  const pending = useChatStore((s) => s.pending);
-  const selectConversation = useChatStore((s) => s.selectConversation);
   const startNewChat = useChatStore((s) => s.startNewChat);
-  const pendingIds = Object.keys(pending);
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const userName = useAuthStore((s) => s.name);
 
   function goToChat() {
     if (!onChatRoute) router.push("/app");
@@ -56,7 +52,6 @@ export function AppSidebar({ onNavigate }: { onNavigate?: () => void }) {
         aria-label="Sidebar"
         className="min-h-0 flex-1 space-y-1 overflow-y-auto px-2 pb-3"
       >
-      
         {navSections.map((section) => (
           <SidebarSection
             key={section.label}
@@ -90,12 +85,14 @@ export function AppSidebar({ onNavigate }: { onNavigate?: () => void }) {
             aria-hidden="true"
             className="grid size-8 shrink-0 place-items-center rounded-full bg-accent-soft text-xs font-semibold text-accent-text"
           >
-            G
+            {isAuthenticated ? userName.charAt(0).toUpperCase() : "G"}
           </span>
           <div className="min-w-0 flex-1">
-            <p className="truncate text-sm font-medium">Guest</p>
+            <p className="truncate text-sm font-medium">
+              {isAuthenticated ? userName : "Guest"}
+            </p>
             <p className="truncate text-xs text-subtle-foreground">
-              Demo workspace
+              {isAuthenticated ? "Signed in" : "Demo workspace"}
             </p>
           </div>
           <ThemeToggle />
