@@ -1,11 +1,8 @@
-import React from 'react'
+import type { Metadata } from "next";
+import { SopBuilderView } from "@/components/dashboard/sop-builder-view";
 
-function page() {
-  return (
-    <div>
-       Hello world !
-    </div>
-  )
+export const metadata: Metadata = { title: "AI SOP Builder" };
+
+export default function SopBuilderPage() {
+  return <SopBuilderView />;
 }
-
-export default page

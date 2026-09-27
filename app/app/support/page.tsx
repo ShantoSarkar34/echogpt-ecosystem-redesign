@@ -1,11 +1,8 @@
-import React from 'react'
+import type { Metadata } from "next";
+import { SupportView } from "@/components/dashboard/support-view";
 
-function page() {
-  return (
-    <div>
-       Hello world !
-    </div>
-  )
+export const metadata: Metadata = { title: "Support" };
+
+export default function SupportPage() {
+  return <SupportView />;
 }
-
-export default page
