@@ -1,11 +1,8 @@
-import React from 'react'
+import type { Metadata } from "next";
+import { JobAnalysisView } from "@/components/dashboard/job-analysis-view";
 
-function page() {
-  return (
-    <div>
-       Hello world !
-    </div>
-  )
+export const metadata: Metadata = { title: "AI Job Analysis" };
+
+export default function JobAnalysisPage() {
+  return <JobAnalysisView />;
 }
-
-export default page
