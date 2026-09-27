@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import { ImageStudioView } from "@/components/dashboard/image-studio-view";
+import { VideoStudioView } from "@/components/dashboard/video-studio-view";
 
-export const metadata: Metadata = { title: "Image Studio" };
+export const metadata: Metadata = { title: "Video Studio" };
 
-export default function ImageStudioPage() {
-  return <ImageStudioView />;
+export default function VideoStudioPage() {
+  return <VideoStudioView />;
 }
