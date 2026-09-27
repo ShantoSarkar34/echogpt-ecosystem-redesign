@@ -1,11 +1,8 @@
-import React from 'react'
+import type { Metadata } from "next";
+import { TasksView } from "@/components/dashboard/tasks-view";
 
-function page() {
-  return (
-    <div>
-             Hello world !
-    </div>
-  )
+export const metadata: Metadata = { title: "AI Tasks" };
+
+export default function TasksPage() {
+  return <TasksView />;
 }
-
-export default page
