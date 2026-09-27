@@ -1,16 +1,13 @@
 # EchoGPT Ecosystem Redesign
 
-A frontend redesign concept for the **EchoGPT ecosystem**, built as an assignment for the **AppifyDevs Software Engineering Internship (Frontend)**. One Next.js project delivers three connected experiences that share a single design system:
+A frontend redesign concept for the **EchoGPT ecosystem**, built as an assignment for the **AppifyDevs Software Engineering Internship (Frontend)**. One Next.js project delivers a marketing site, a full AI-workspace dashboard (14 feature pages plus chat and settings), a Chrome extension concept, and a demo authentication flow — all sharing a single design system.
 
-1. **Web application**: a modern AI chat dashboard
-2. **Marketing landing page**: a single-page product site
-3. **Chrome extension concept**: an interactive, compact popup with page-context features
+> **Demo notice:** this is a frontend-only concept. There is no backend, no real authentication, no real payments, and no real AI. Every "generate," "connect," "subscribe," and "sign in" flow is simulated with mock data and local state, and is labeled as such in the UI. Model names, product names, and community stats are representative placeholders.
 
-> **Demo notice:** this is a frontend-only concept. There is no backend, no authentication, and no real AI. All assistant replies are generated locally from mock data, and the model names are representative placeholders. The project is not affiliated with or endorsed by the original product.
-
-|  |  |
-|---|---|
-| **Live demo** | https://echogpt-ecosystem.vercel.app/ |
+|                       |                                                              |
+| --------------------- | ------------------------------------------------------------ |
+| **Live demo**         | https://echogpt-ecosystem.vercel.app/                        |
+| **GitHub repository** | https://github.com/ShantoSarkar34/echogpt-ecosystem-redesign |
 
 ---
 
@@ -37,12 +34,26 @@ A frontend redesign concept for the **EchoGPT ecosystem**, built as an assignmen
 
 ## Quick tour
 
-| Route | What it is |
-|---|---|
-| `/` | Landing page: hero, product preview, features, AI models, how it works, why EchoGPT, FAQ, final CTA |
-| `/app` | Chat web app with sidebar, history, model selector, prompt input, and quick actions |
-| `/app/settings` | Settings: theme, default model, response style, interface preferences, data reset |
-| `/extension` | Chrome extension concept shown inside a mock browser window |
+| Route                | What it is                                                   |
+| -------------------- | ------------------------------------------------------------ |
+| `/`                  | Landing page                                                 |
+| `/app`               | Chat                                                         |
+| `/app/settings`      | Settings (theme, model, response style, interface prefs)     |
+| `/app/image-studio`  | Image Studio — mock AI image generation                      |
+| `/app/video-studio`  | Video Studio — mock AI video generation with progress        |
+| `/app/compare`       | Compare 2–4 AI models side by side                           |
+| `/app/connectors`    | Manage integrations (Drive, Slack, GitHub, etc.)             |
+| `/app/history`       | Unified activity history across chats, images, videos, tasks |
+| `/app/store`         | AI tools/templates/prompts marketplace                       |
+| `/app/tasks`         | AI Tasks — create and run mock background tasks              |
+| `/app/job-analysis`  | Paste a job description, get a mock analysis                 |
+| `/app/sop-builder`   | Generate, edit, and export a mock SOP                        |
+| `/app/support`       | FAQ search + a demo support ticket flow                      |
+| `/app/newsletter`    | Newsletter subscribe + recent issues                         |
+| `/app/subscriptions` | Plans, current-plan indicator, demo subscribe flow           |
+| `/app/platform`      | Model catalog with search and provider filters               |
+| `/app/discord`       | Community page with a demo join flow                         |
+| `/extension`         | Chrome extension concept (in a mock browser)                 |
 
 **Things worth trying**
 
@@ -81,26 +92,68 @@ A frontend redesign concept for the **EchoGPT ecosystem**, built as an assignmen
 - Final call to action and footer
 - Subtle scroll-reveal animations
 
+### Dashboard shell
+
+- One shared `AppShell` (sidebar + header) used by every `/app/*` route — no per-page duplication
+- Sidebar organized into **Engagement**, **Help & Support**, **Account**, and **Platform** sections, plus the original conversation history pinned at the top
+- Shared `AppHeader`: page title, the chat's model selector (shown only on `/app`), and a Sign In / signed-in-user control
+- Mobile drawer, active-state highlighting, and keyboard navigation across all 17 in-app routes
+
+### Chat (`/app`) — unchanged from the original build
+
+- New chat, grouped history (Today/Yesterday/Previous 7 days), model selector remembered per conversation
+- Quick actions, Markdown-lite formatted replies, regenerate, edit-and-resend
+- Loading, empty, and error (`/error` + retry) states
+- Enter/Shift+Enter/Ctrl+Enter behavior driven by Settings
+
+### The 14 dashboard pages
+
+Each page below is fully interactive with mock data — not a static mockup:
+
+- **Image Studio** — prompt, style/ratio/quality/count controls, generate → loading → gallery with reuse/copy/delete
+- **Video Studio** — script input, style/duration, generate → live progress bar → Ready state with a play button
+- **Compare** — pick 2–4 models, one prompt, side-by-side responses with timing and token counts
+- **Connectors** — 8 integrations, search + category filters, connect/disconnect with live-region announcements
+- **History** — filter by type, search, sort, inline rename, delete with confirmation
+- **Store** — featured section, search/filter/sort, product detail dialogs
+- **AI Tasks** — live stats, create-task modal, run a task through Pending → Running → Completed
+- **AI Job Analysis** — paste a job description, get a match score, skills, gaps, and recommendations; `/error` demo included
+- **AI SOP Builder** — guided form, generated SOP with Edit / Copy / Save / **real `.txt` export**
+- **Support** — searchable FAQ by category, contact-support ticket modal with a success state
+- **Newsletter** — validated email subscribe, recent issues
+- **Subscriptions** — 4 billing plans, current-plan indicator, confirm-to-subscribe flow
+- **AI Platform** — model catalog, search + provider filters, speed/intelligence meters
+- **Discord** — community stats, categorized channels, recent activity, demo join dialogs
+
+### Authentication demo
+
+- Sign In / Sign Up in one modal, switchable via "Create account" / "Sign in"
+- Real client-side validation: empty fields, invalid email format, password length, mismatched confirm-password
+- Loading → success states for both the form and each of the three social login buttons (Google, Facebook, GitHub — real brand icons via `react-icons`)
+- Header and sidebar both reflect signed-in state; one click signs back out
+
+---
+
 ### Chrome extension concept (`/extension`)
 
 - Compact 380px popup shell, shown inside a mock browser with an address bar and toolbar icon
 - **Three tabs:** Chat, History, Settings
-- **Page-context concept:** a mock article is "read" by the extension, and quick actions change to page-specific ones such as *Summarize this page* and *Explain selected text*
+- **Page-context concept:** a mock article is "read" by the extension, and quick actions change to page-specific ones such as _Summarize this page_ and _Explain selected text_
 - Model selection, theme toggle, and new chat in a compact header
 - History with **search**
 - Extension-specific settings
 
 ### Settings (`/app/settings`)
 
-| Setting | Effect |
-|---|---|
-| Theme (Light, Dark, System) | Switches the whole site |
-| Default model | Used when starting a new chat |
-| Response style (Concise, Balanced, Detailed) | Changes the wording of mock replies |
-| Compact messages | Tighter chat spacing |
-| Enter to send | When off, Ctrl/⌘ + Enter sends |
-| Reduce animations | Minimizes motion app-wide, in addition to the OS setting |
-| Reset preferences, Reset demo chats | Restore defaults (chat reset uses a confirmation dialog) |
+| Setting                                      | Effect                                                   |
+| -------------------------------------------- | -------------------------------------------------------- |
+| Theme (Light, Dark, System)                  | Switches the whole site                                  |
+| Default model                                | Used when starting a new chat                            |
+| Response style (Concise, Balanced, Detailed) | Changes the wording of mock replies                      |
+| Compact messages                             | Tighter chat spacing                                     |
+| Enter to send                                | When off, Ctrl/⌘ + Enter sends                           |
+| Reduce animations                            | Minimizes motion app-wide, in addition to the OS setting |
+| Reset preferences, Reset demo chats          | Restore defaults (chat reset uses a confirmation dialog) |
 
 ---
 
@@ -128,20 +181,20 @@ Beyond the assignment's baseline requirements:
 
 ## Technologies used
 
-| Area | Technology |
-|---|---|
-| Framework | [Next.js 16](https://nextjs.org/) (App Router) |
-| Language | TypeScript (strict) |
-| UI library | React 19 |
-| Styling | Tailwind CSS v4 (CSS-first config, design tokens as CSS variables) |
-| Components | Custom components with `class-variance-authority`, `clsx`, `tailwind-merge` |
-| Accessible primitives | Radix UI: Dialog, Dropdown Menu, Tabs, Slot |
-| Icons | Lucide React |
-| Animation | Motion (`motion/react`) using `LazyMotion` with `domAnimation` |
-| Theming | `next-themes` |
-| State | Zustand (chat state and persisted preferences) |
-| Fonts | Geist via `next/font` |
-| Hosting | Vercel |
+| Area                  | Technology                                                                  |
+| --------------------- | --------------------------------------------------------------------------- |
+| Framework             | [Next.js 16](https://nextjs.org/) (App Router)                              |
+| Language              | TypeScript (strict)                                                         |
+| UI library            | React 19                                                                    |
+| Styling               | Tailwind CSS v4 (CSS-first config, design tokens as CSS variables)          |
+| Components            | Custom components with `class-variance-authority`, `clsx`, `tailwind-merge` |
+| Accessible primitives | Radix UI: Dialog, Dropdown Menu, Tabs, Slot                                 |
+| Icons                 | Lucide React                                                                |
+| Animation             | Motion (`motion/react`) using `LazyMotion` with `domAnimation`              |
+| Theming               | `next-themes`                                                               |
+| State                 | Zustand (chat state and persisted preferences)                              |
+| Fonts                 | Geist via `next/font`                                                       |
+| Hosting               | Vercel                                                                      |
 
 No backend, database, authentication, payments, or external AI API is used.
 
@@ -172,14 +225,14 @@ Open [http://localhost:3000](http://localhost:3000).
 
 ### Available scripts
 
-| Script | Description |
-|---|---|
-| `npm run dev` | Start the development server |
-| `npm run build` | Create a production build |
-| `npm start` | Serve the production build |
-| `npm run lint` | Run ESLint |
+| Script              | Description                                        |
+| ------------------- | -------------------------------------------------- |
+| `npm run dev`       | Start the development server                       |
+| `npm run build`     | Create a production build                          |
+| `npm start`         | Serve the production build                         |
+| `npm run lint`      | Run ESLint                                         |
 | `npm run typecheck` | Run the TypeScript compiler without emitting files |
-| `npm run check` | Lint, type check, and build in one step |
+| `npm run check`     | Lint, type check, and build in one step            |
 
 ### Environment variables
 
@@ -191,47 +244,41 @@ None are required. The project has no secrets and makes no network calls to thir
 
 ```text
 app/
-├── (marketing)/          # Landing page route group (layout with navbar and footer)
+├── (marketing)/              # Landing page
+├── app/                      # Dashboard (shared layout via AppShell)
 │   ├── layout.tsx
-│   └── page.tsx
-├── app/                  # Web application
-│   ├── layout.tsx        # App shell (sidebar and drawer)
-│   ├── page.tsx          # Chat
-│   └── settings/page.tsx
-├── extension/page.tsx    # Chrome extension concept
-├── error.tsx             # Error boundary page
-├── not-found.tsx         # Custom 404
-├── layout.tsx            # Root layout, fonts, providers, metadata, viewport
-└── globals.css           # Design tokens, themes, motion tokens
+│   ├── page.tsx              # Chat
+│   ├── settings/
+│   ├── image-studio/  video-studio/  compare/  connectors/
+│   ├── history/  store/  tasks/  job-analysis/  sop-builder/
+│   ├── support/  newsletter/  subscriptions/  platform/  discord/
+├── extension/                # Chrome extension concept
+├── error.tsx  not-found.tsx
+└── layout.tsx  globals.css
 
 components/
-├── chat/                 # Sidebar, header, messages, composer, quick actions, model selector
-├── extension/            # Popup panel, tabs, browser mockup, context toggle
-├── landing/              # Navbar, hero, sections, footer, reveal animation
-├── settings/             # Settings sections and global settings effects
-├── shared/               # Logo, theme toggle, container
-└── ui/                   # Button, Switch, SegmentedControl
+├── chat/                     # Message list, composer, model selector, etc.
+├── dashboard/                # AppShell, AppSidebar, AppHeader, PageHeader,
+│                              # Card, Badge, StatCard, EmptyState, LoadingState,
+│                              # DemoNoticeDialog, AuthModal, and one *-view.tsx
+│                              # per dashboard page
+├── extension/  landing/  settings/  shared/  ui/
 
-data/                     # Mock conversations, models, quick actions, landing content
-hooks/                    # Zustand stores, useMounted, useMediaQuery
-lib/                      # Utilities and the mock response generator
-providers/                # Theme, motion, and settings providers
-types/                    # Shared TypeScript types
+data/                         # nav.ts + one file per feature page's mock data
+hooks/                        # useChatStore, useSettingsStore, useAuthStore, etc.
+lib/  providers/  types/
 ```
 
 ---
 
 ## Architecture decisions
 
-- **One project, three experiences.** Routes and route groups keep the landing page, app, and extension separate while allowing them to share components, tokens, and state.
-- **Server components by default.** Client components are used only where interactivity requires them, so most landing sections ship no component JavaScript.
-- **Zustand only where state is truly shared.** The chat store is shared by the web app and the extension. Preferences live in a second, persisted store. Everything else is local state.
-- **Hydration-safe persistence.** The preferences store uses `skipHydration` and is rehydrated after mount, avoiding server and client mismatches.
-- **Content separated from UI.** Copy, mock chats, models, and quick actions live in `data/`, so wording changes never touch components.
-- **Accessible primitives from Radix, styling from our own tokens.** Dialogs, menus, and tabs get correct focus management and keyboard behavior without inheriting an external visual style.
-- **Hand-built components instead of the shadcn CLI.** This keeps the theme-token system under full control and avoids extra generated files and dependencies.
-- **Representative, not factual, content.** Model names, articles, and answers are clearly labeled as demo content.
-- **Deliberately omitted sections.** Pricing and testimonials were left out because they would present invented claims as facts and would only lengthen the page.
+- **One generic dashboard shell, not 17 bespoke headers.** `AppShell`/`AppSidebar`/`AppHeader` replaced the original chat-only sidebar and per-page headers, so adding a page never means duplicating navigation.
+- **Nav config as the single source of truth.** `data/nav.ts` drives the sidebar, active-state highlighting, and page titles — a new page needs one nav entry and one route, not changes in three places.
+- **Client components only where genuinely needed.** Every dashboard page with generate/filter/form interactivity is a client component; the shell's static chrome (Card, Badge, PageHeader) stays server-renderable.
+- **One `DemoNoticeDialog` instead of five bespoke "coming soon" modals.** Any button that can't do something real gets this shared, honest component rather than being left dead or faked.
+- **Auth is a separate, unpersisted Zustand store**, deliberately not layered into the chat or settings stores, since signing out shouldn't touch chat history or preferences.
+- **`react-icons` was added specifically for brand marks** (Google/Facebook/GitHub) that Lucide intentionally doesn't include — every other icon in the project is still Lucide, so there's no icon-system duplication.
 
 ---
 
@@ -296,11 +343,11 @@ types/                    # Shared TypeScript types
 
 **Lighthouse (production build):** _add your scores here after running Lighthouse_
 
-| Route | Performance | Accessibility | Best Practices | SEO |
-|---|---|---|---|---|
-| `/` | | | | |
-| `/app` | | | | |
-| `/extension` | | | | |
+| Route        | Performance | Accessibility | Best Practices | SEO |
+| ------------ | ----------- | ------------- | -------------- | --- |
+| `/`          |             |               |                |     |
+| `/app`       |             |               |                |     |
+| `/extension` |             |               |                |     |
 
 ---
 
@@ -320,12 +367,13 @@ types/                    # Shared TypeScript types
 
 ## Known limitations
 
-- Replies are keyword-based mock responses, not real AI output
-- Conversations are not persisted between page loads
-- The extension is not installable and does not interact with real web pages
-- No Markdown or code-block rendering in messages
-- No automated tests yet (testing has been manual and via Lighthouse)
-- No internationalization or right-to-left layout support
+- Replies, analyses, and generated content are keyword- or template-based mocks, not real AI output
+- The SOP Builder's Department/Tone/Step-count fields are collected but don't change the generated wording — only the title does
+- Regenerating or editing a chat message in the extension doesn't reapply that message's original page-context; it falls back to generic phrasing
+- Each generation flow (Image Studio, Video Studio, AI Tasks) supports one job in flight at a time by design, not a real concurrent queue
+- No Markdown/code-block rendering beyond the lightweight bullet/paragraph renderer used in chat
+- No automated test suite yet — testing has been manual, checklist-driven, and via Lighthouse
+- The Chrome extension is a concept built inside this app, not a packaged, installable extension
 
 ---
 
